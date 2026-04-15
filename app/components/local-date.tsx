@@ -1,8 +1,7 @@
-import { useId } from "react";
+"use client";
 
-function formatDate(iso: string, options?: Intl.DateTimeFormatOptions) {
-  return new Date(iso).toLocaleDateString(undefined, options);
-}
+import { useId } from "react";
+import { InlineScript } from "./inline-script";
 
 export function LocalDate({
   date,
@@ -16,12 +15,10 @@ export function LocalDate({
   return (
     <>
       <time id={id} dateTime={date} suppressHydrationWarning>
-        {formatDate(date, options)}
+        {new Date(date).toLocaleDateString(undefined, options)}
       </time>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `{const n=document.getElementById("${id}");if(n)n.textContent=(${formatDate.toString()})("${date}",${JSON.stringify(options)})}`,
-        }}
+      <InlineScript
+        html={`{var n=document.getElementById("${id}");if(n)n.textContent=new Date("${date}").toLocaleDateString(undefined,${JSON.stringify(options)})}`}
       />
     </>
   );

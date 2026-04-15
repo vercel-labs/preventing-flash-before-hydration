@@ -25,10 +25,13 @@ const sections = [
   },
 ];
 
+const DEFAULT_ID = sections[0].id;
+const SECTION_IDS = sections.map((s) => s.id);
+
 export function Accordion() {
   const [openId, setOpenId] = useState(() => {
-    if (typeof window === "undefined") return sections[0].id;
-    return localStorage.getItem(STORAGE_KEY) ?? sections[0].id;
+    if (typeof window === "undefined") return DEFAULT_ID;
+    return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_ID;
   });
 
   const handleToggle = useCallback(
@@ -60,6 +63,11 @@ export function Accordion() {
           </p>
         </details>
       ))}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `{var id=localStorage.getItem("${STORAGE_KEY}")??"${DEFAULT_ID}";${JSON.stringify(SECTION_IDS)}.forEach(function(s){var el=document.getElementById("section-"+s);if(el){if(s===id)el.setAttribute("open","");else el.removeAttribute("open")}})}`,
+        }}
+      />
     </div>
   );
 }
